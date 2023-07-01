@@ -1,0 +1,30 @@
+<h1>Reminder App</h1> 
+
+<form action="/addReminderItem/" method = "post">{% csrf_token %}
+    <input type="text" name="content">
+    <input type="submit" value="Add Reminder Item">
+</form>
+
+<ul>
+    {% for rem_item in all_items %} 
+    <li>{{rem_item.content}}
+        <p>{% if rem_item.remind_date > 0 %}
+        Remind Time: {{rem_item.remind_date}}
+        {% endif %}</p>
+        
+        <form action="/setRemindDate/{{rem_item.id}}/" method = "post">{% csrf_token %}
+            <input type="int" name="remind_date">
+            <input type="submit" value="Set Remind Time">
+        </form>
+
+        <form action="/sendRemindEmail/{{rem_item.id}}/" method = "post">{% csrf_token %}
+            <input type="submit" value="Test send email">
+        </form>
+
+        <form action="/deleteReminderItem/{{rem_item.id}}/" method = "post">{% csrf_token %}
+            <input type="submit" value="Delete">
+        </form>
+    </li>
+    {% endfor %}
+</ul> 
+
