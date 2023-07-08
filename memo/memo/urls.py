@@ -16,13 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from reminder.views import reminderView, addReminderView, deleteReminderView, setRemindView, sendRemindView
+from reminder.views import ReminderView, AddRemindView, EditRemindView, DeleteRemindView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('reminder/', reminderView),
-    path('addReminderItem/', addReminderView),
-    path('deleteReminderItem/<int:rem_item>/', deleteReminderView),
-    path('setRemindDate/<int:rem_item>/', setRemindView),
-    path('sendRemindEmail/<int:rem_item>/', sendRemindView),
+    path('', ReminderView.as_view(), name='memo'),
+    path('add_remind/', AddRemindView.as_view(), name='add_remind'),
+    path('edit_remind/<int:pk>/', EditRemindView.as_view(), name='edit_remind'),
+    path('edit_remind/<int:pk>/delete/', DeleteRemindView.as_view(), name='delete_remind'),
+    # path('reminder/', reminderView),
+    # path('reminder/add_remind/', addReminderView, name='add_remind'),
+    # path('deleteReminderItem/<int:rem_item>/', deleteReminderView),
+    # path('reminder/edit_remind/<int:rem_item>/', editReminderView, name='edit_remind'),
+    # path('setRemindDate/<int:rem_item>/', setRemindView),
+    # path('sendRemindEmail/<int:rem_item>/', sendRemindView),
+    # path('enableRemind/<int:rem_item>/', enableRemindView),
 ]

@@ -1,39 +1,113 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
+from django.views.generic import ListView, FormView, UpdateView, DeleteView
+from django.contrib import messages
 from .models import ReminderItem
-from django.http import HttpResponseRedirect
-from django.core.mail import send_mail
+from .forms import AddRemindForm
+# from django.http import HttpResponseRedirect
+# from django.core.mail import send_mail
 
 
-def reminderView(request):
-    reminder_items = ReminderItem.objects.all()
-    return render(request, 'reminder.html', {'all_items': reminder_items})
+# def reminderView(request):
+#     reminder_items = ReminderItem.objects.all()
+#     return render(request, 'reminder.html', {'all_items': reminder_items})
+
+class ReminderView(ListView):
+    model = ReminderItem
+    template_name = 'reminder.html'
 
 
-def addReminderView(request):
-    new_content = request.POST['content']
-    new_item = ReminderItem(content=new_content)
-    new_item.save()
-    return HttpResponseRedirect('/reminder/')
+class AddRemindView(FormView):
+    form_class = AddRemindForm
+    template_name = 'add_remind.html'
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
-def deleteReminderView(request, rem_item):
-    selected_item = ReminderItem.objects.get(id=rem_item)
-    selected_item.delete()
-    return HttpResponseRedirect('/reminder/')
+class EditRemindView(UpdateView):
+    template_name = 'edit_remind.html'
+    form_class = AddRemindForm
+    model = ReminderItem
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        return redirect('/')
 
 
-def setRemindView(request, rem_item):
-    selected_item = ReminderItem.objects.get(id=rem_item)
-    selected_item.remind_date = request.POST['remind_date']
-    selected_item.save()
-    return HttpResponseRedirect('/reminder/')
+class DeleteRemindView(DeleteView):
+    model = ReminderItem
+    template_name = 'delete_remind.html'
+    success_url = '/'
+    context_object_name = 'remind'
+
+    def form_valid(self, form):
+        messages.success(self.request, "The task was deleted successfully.")
+        return super(DeleteRemindView, self).form_valid(form)
 
 
-def sendRemindView(request, rem_item):
-    remind_item = ReminderItem.objects.get(id=rem_item)
-    send_mail(subject='Remind from Memo App',
-              message=remind_item.content,
-              # TODO нужно придумать как устанавливать email пользователя
-              recipient_list=['veek47@ya.ru', ]
-              )
-    return HttpResponseRedirect('/reminder/')
+# def addReminderView(request):
+#     form = AddRemindForm()
+#     if request.method == "POST":
+#         form = AddRemindForm(request.POST)
+#         if form.is_valid():
+#             rem_item = form.save(commit=False)
+#             rem_item.save()
+#             return redirect('/reminder')
+#     else:
+#         form = AddRemindForm()
+#     return render(request, 'add_remind.html', {'form': form})
+
+
+# def editRemindView(request, rem_item):
+#     selected_item = get_object_or_404(ReminderItem, id=rem_item)
+#     form = EditRemindForm()
+#     if request.method == "POST":
+#         form = EditRemindForm(request.POST, instance=selected_item)
+#         if form.is_valid():
+#             rem_item = form.save(commit=False)
+#             rem_item.save()
+#             return redirect('/reminder')
+#     else:
+#         form = EditRemindForm()
+#     return render(request, 'edit_remind.html', {'form': form})
+
+
+# def addReminderView(request):
+#     new_content = request.POST['content']
+#     new_item = ReminderItem(content=new_content)
+#     new_item.save()
+#     return HttpResponseRedirect('/reminder/')
+
+
+# def deleteReminderView(request, rem_item):
+#     selected_item = ReminderItem.objects.get(id=rem_item)
+#     selected_item.delete()
+#     return HttpResponseRedirect('/reminder/')
+
+
+# def enableRemindView(request, rem_item):
+#     selected_item = ReminderItem.objects.get(id=rem_item)
+#     selected_item.reminder_on = request.POST['reminder_on']
+#     selected_item.save()
+#     return HttpResponseRedirect('/reminder/')
+
+
+# def setRemindView(request, rem_item):
+#     selected_item = ReminderItem.objects.get(id=rem_item)
+#     selected_item.remind_date = request.POST['remind_date']
+#     selected_item.save()
+#     return HttpResponseRedirect('/reminder/')
+
+
+# тестовая функция для проверки отправки сообщения
+# def sendRemindView(request, rem_item):
+#     remind_item = ReminderItem.objects.get(id=rem_item)
+#     send_mail(subject='Remind from Memo App',
+#               message=remind_item.content,
+#               # TODO нужно придумать как устанавливать email пользователя
+#               recipient_list=['veek47@ya.ru', ]
+#               )
+#     return HttpResponseRedirect('/reminder/')

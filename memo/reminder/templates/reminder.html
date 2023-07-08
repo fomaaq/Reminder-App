@@ -1,29 +1,40 @@
-<h1>Reminder App</h1> 
+<h1>Memo app</h1> 
 
-<form action="/addReminderItem/" method = "post">{% csrf_token %}
+<div>
+    <a href="{% url 'add_remind' %}">Add new remind</a>
+</div>
+
+{% comment %} <form action="/addReminderItem/" method = "post">{% csrf_token %}
     <input type="text" name="content">
-    <input type="submit" value="Add Reminder Item">
-</form>
+    <input type="submit" value="Add new remind">
+</form> {% endcomment %}
 
 <ul>
-    {% for rem_item in all_items %} 
-    <li>{{rem_item.content}}
-        <p>{% if rem_item.remind_date > 0 %}
-        Remind Time: {{rem_item.remind_date}}
+    {% for rem_item in object_list %}
+    <li><a href="{% url "edit_remind" pk=rem_item.pk %}">{{rem_item.title}}</a>
+            <p>{% if rem_item.content %}
+            Description: {{rem_item.content}}
+            {% endif %}</p>
+        <p>{% if rem_item.reminder_on %}
+        Remind Time: {{rem_item.remind_date}}, {{rem_item.remind_time}} 
         {% endif %}</p>
-        
-        <form action="/setRemindDate/{{rem_item.id}}/" method = "post">{% csrf_token %}
+
+        {% comment %} <a href="{% url 'edit_remind' id=rem_item.id %}">Edit new remind</a> {% endcomment %}
+  
+        {% comment %}
+         <form action="/setRemindDate/{{rem_item.id}}/" method = "post">{% csrf_token %}
             <input type="int" name="remind_date">
             <input type="submit" value="Set Remind Time">
-        </form>
+        </form> 
+        {% endcomment %}
 
-        <form action="/sendRemindEmail/{{rem_item.id}}/" method = "post">{% csrf_token %}
+        {% comment %} <form action="/sendRemindEmail/{{rem_item.id}}/" method = "post">{% csrf_token %}
             <input type="submit" value="Test send email">
-        </form>
+        </form> {% endcomment %}
 
-        <form action="/deleteReminderItem/{{rem_item.id}}/" method = "post">{% csrf_token %}
-            <input type="submit" value="Delete">
-        </form>
+        {% comment %} <form action="/deleteReminderItem/{{rem_item.id}}/" method = "post">{% csrf_token %}
+            <input type="submit" value="Delete"> {% endcomment %}
+        {% comment %} </form> {% endcomment %}
     </li>
     {% endfor %}
 </ul> 

@@ -1,10 +1,19 @@
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.urls import reverse
 
 
 class ReminderItem(models.Model):
-    content = models.TextField(verbose_name='Content')
-    remind_date = models.IntegerField(blank=True, validators=[MinValueValidator(0)], verbose_name='Remind date')
+    title = models.CharField(max_length=50, verbose_name='title')
+    content = models.TextField(max_length=1000, verbose_name='Content', blank=True)
+    reminder_on = models.BooleanField(verbose_name='Remind enable')
+    remind_date = models.DateField(blank=True, null=True, verbose_name='Remind date')
+    remind_time = models.TimeField(blank=True, null=True, verbose_name='Remind time')
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("delete_remind", kwargs={"pk": self.pk})
 
     """
     + напоминать/не напоминать

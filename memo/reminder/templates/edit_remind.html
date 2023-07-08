@@ -1,0 +1,7 @@
+<h1>Edit form</h1>
+<form method="POST" class="post-form">{% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="save btn btn-default">Save</button>
+</form>
+<p><a href="{% url 'delete_remind' pk=object.pk %}">Delete</a></p>
+<p><a href="{% url 'memo' %}">Back</a></p>
