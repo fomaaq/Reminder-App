@@ -1,0 +1,8 @@
+<h1>Memo app</h1> 
+<h2>Log In</h2>
+<form method="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<button type="submit">Log In</button>
+</form>
+<p class="text-center">A new user? <a href="register">Register</a> in the app.</p>

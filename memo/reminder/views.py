@@ -1,8 +1,11 @@
 from django.shortcuts import redirect
-from django.views.generic import ListView, FormView, UpdateView, DeleteView
+from django.views.generic import ListView, FormView, UpdateView, DeleteView, CreateView
+from django.contrib.auth.views import LoginView
+from django.contrib.auth import login
 from django.contrib import messages
 from .models import ReminderItem
-from .forms import AddRemindForm
+from .forms import AddRemindForm, NewUserForm
+from django.urls import reverse_lazy
 # from django.http import HttpResponseRedirect
 # from django.core.mail import send_mail
 
@@ -22,6 +25,7 @@ class AddRemindView(FormView):
     success_url = '/'
 
     def form_valid(self, form):
+        form.instance.user = self.request.user
         form.save()
         return super().form_valid(form)
 
@@ -46,6 +50,30 @@ class DeleteRemindView(DeleteView):
     def form_valid(self, form):
         messages.success(self.request, "The task was deleted successfully.")
         return super(DeleteRemindView, self).form_valid(form)
+
+
+class SignUpView(CreateView):
+    template_name = 'register.html'
+    success_url = reverse_lazy('login')
+    form_class = NewUserForm
+    success_url = '/'
+
+    def form_valid(self, form):
+        form_valid = super().form_valid(form)
+        login(self.request, self.object)
+        return form_valid
+
+
+class LoginView(LoginView):
+    template_name = 'login.html'
+    redirect_authenticated_user = True
+
+    def get_success_url(self):
+        return reverse_lazy('memo')
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Invalid username or password')
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 # def addReminderView(request):

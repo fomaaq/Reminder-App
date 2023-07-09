@@ -1,12 +1,8 @@
 from django import forms
 from django.db import models
 from .models import ReminderItem
-
-
-# class AddRemindForm(forms.Form):
-#     content = forms.CharField(max_length=200, widget=forms.TextInput)
-#     reminder_on = forms.BooleanField(required=False, initial=True)
-#     remind_date = forms.DateTimeField(required=False, widget=forms.DateTimeInput)
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 
 class AddRemindForm(forms.ModelForm):
@@ -24,3 +20,17 @@ class AddRemindForm(forms.ModelForm):
             'remind_date': 'Format should be "YYYY-MM-DD"',
             'remind_time': 'Format should be "HH:MM"',
         }
+
+
+class NewUserForm(UserCreationForm):
+    username = forms.CharField(label='User name',
+                               max_length=150,
+                               help_text='User name must consist of a maximum of 150 characters'
+                               )
+    email = forms.EmailField(label='e-mail', required=True)
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm password', widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ("username", "email", "password1", "password2")
