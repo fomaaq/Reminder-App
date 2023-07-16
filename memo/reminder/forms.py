@@ -13,8 +13,8 @@ class AddRemindForm(forms.ModelForm):
         model = ReminderItem
         fields = ('title', 'content', 'reminder_on', 'remind_date', 'remind_time')
         widgets = {
-            'remind_date': forms.DateInput(),
-            'remind_time': forms.TimeInput(),
+            'remind_date': forms.DateInput(attrs={'class': 'form-control'}),
+            'remind_time': forms.TimeInput(attrs={'class': 'form-control'}, format='%H:%M'),
         }
         help_texts = {
             'remind_date': 'Format should be "YYYY-MM-DD"',
@@ -28,9 +28,25 @@ class NewUserForm(UserCreationForm):
                                help_text='User name must consist of a maximum of 150 characters'
                                )
     email = forms.EmailField(label='e-mail', required=True)
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Confirm password', widget=forms.PasswordInput)
+    password1 = forms.CharField(label='Password',
+                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    password2 = forms.CharField(label='Confirm password',
+                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = User
         fields = ("username", "email", "password1", "password2")
+
+# TODO созадть форму для редактирования пользователя
+# class UpdateUserForm(forms.ModelForm):
+#     username = forms.CharField(max_length=100,
+#                                required=True,
+#                                widget=forms.TextInput(attrs={'class': 'form-control'}))
+#     email = forms.EmailField(required=True,
+#                              widget=forms.TextInput(attrs={'class': 'form-control'}))
+#     password = forms.PasswordInput(re
+#                                    widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+#     class Meta:
+#         model = User
+#         fields = ['username', 'email', 'password']
