@@ -17,12 +17,14 @@ from django.urls import reverse_lazy
 class ReminderView(ListView):
     model = ReminderItem
     template_name = 'reminder.html'
+    extra_content = {'title': 'Memo App'}
 
 
 class AddRemindView(FormView):
     form_class = AddRemindForm
     template_name = 'add_remind.html'
     success_url = '/'
+    extra_content = {'title': 'Add new remind'}
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -34,6 +36,7 @@ class EditRemindView(UpdateView):
     template_name = 'edit_remind.html'
     form_class = AddRemindForm
     model = ReminderItem
+    extra_content = {'title': 'Edit remind'}
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -46,6 +49,7 @@ class DeleteRemindView(DeleteView):
     template_name = 'delete_remind.html'
     success_url = '/'
     context_object_name = 'remind'
+    extra_content = {'title': 'Delete remind'}
 
     def form_valid(self, form):
         messages.success(self.request, "The task was deleted successfully.")
@@ -57,6 +61,7 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
     form_class = NewUserForm
     success_url = '/'
+    extra_content = {'title': 'Sign Up'}
 
     def form_valid(self, form):
         form_valid = super().form_valid(form)
@@ -67,6 +72,7 @@ class SignUpView(CreateView):
 class LoginView(LoginView):
     template_name = 'login.html'
     redirect_authenticated_user = True
+    extra_content = {'title': 'Login'}
 
     def get_success_url(self):
         return reverse_lazy('memo')

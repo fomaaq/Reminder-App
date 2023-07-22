@@ -17,9 +17,20 @@ class AddRemindForm(forms.ModelForm):
             'remind_time': forms.TimeInput(attrs={'class': 'form-control'}, format='%H:%M'),
         }
         help_texts = {
-            'remind_date': 'Format should be "YYYY-MM-DD"',
+            'remind_date': 'Format should be "DD-MM-YYYY"',
             'remind_time': 'Format should be "HH:MM"',
         }
+
+    def clean(self):
+        error_message = 'Remind date and time fields must be filled in when the enable reminder checkbox is selected'
+        cleaned_data = super().clean()
+        reminder_on = cleaned_data.get('reminder_on')
+        remind_date = cleaned_data.get('remind_date')
+        remind_time = cleaned_data.get('remind_time')
+
+        if reminder_on and (not remind_date or not remind_time):
+            raise forms.ValidationError(error_message)
+        return cleaned_data
 
 
 class NewUserForm(UserCreationForm):
