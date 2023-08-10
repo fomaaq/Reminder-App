@@ -1,8 +1,13 @@
-<h1>Memo app</h1>
-<h2>Delete remind</h2>
-<form method="post">{% csrf_token %}
-    <p>Are you sure you want to delete "{{ remind }}"?</p>
-        <input type="submit" value="Confirm">
-        
-</form>
-<a href="{% url 'memo' %}">Cancel</a>
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <h3 class="mt-3">Delete remind</h3>
+        <form method="post">{% csrf_token %}
+            <p class="mt-2">Are you sure you want to delete "{{ remind }}"?</p>
+            <button type="submit" class="btn btn-primary">Confirm</button>
+        </form>
+        <button type="button" class="mt-3 btn btn-light">
+            <a href="{% url 'memo' %}">Cancel</a>
+        </button>
+    </div>
+{% endblock content %}

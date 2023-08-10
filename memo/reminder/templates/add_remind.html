@@ -1,7 +1,48 @@
-<h1>Memo app</h1>
-<h2>Add new remind</h2>
-<form method="POST" class="post-form">{% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="save btn btn-default">Save</button>
-</form>
-<a href="{% url 'memo' %}">Back</a>
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <form method="POST" class="post-form mt-3">{% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.title.id_for_label }}" class="form-label">Remind title</label>
+            {{ form.title }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.content.id_for_label }}" class="form-label">Remind content</label>
+            {{ form.content }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.reminder_on.id_for_label }}" class="form-label">Remind enable</label>
+            {{ form.reminder_on }}
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => 
+                { 
+                    document.getElementById('chk').addEventListener('change', toggleInput);
+                    function toggleInput(evt) 
+                    {
+                        document.querySelector('.hidden').classList.toggle('visually-hidden');
+                    }
+                    if (document.getElementById('chk').checked) 
+                    {
+                        document.querySelector('.hidden').classList.toggle('visually-hidden');
+                    }
+                });
+        </script>
+        <div class="hidden visually-hidden">
+            <div class="mb-3">
+                <label for="{{ form.remind_date.id_for_label }}" class="form-label">Remind date</label>
+                {{ form.remind_date }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.remind_time.id_for_label }}" class="form-label">Remind time</label>
+                {{ form.remind_time }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    <button type="button" class="mt-2 btn btn-light">
+        <a href="{% url 'memo' %}">Back</a>
+    </button>
+</div>
+{% endblock content %}

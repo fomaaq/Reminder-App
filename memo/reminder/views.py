@@ -17,31 +17,51 @@ from django.urls import reverse_lazy
 class ReminderView(ListView):
     model = ReminderItem
     template_name = 'reminder.html'
-    extra_content = {'title': 'Memo App'}
+    context_object_name = 'reminders'
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return ReminderItem.objects.filter(user=self.request.user)
+        else:
+            pass
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Home page'
+        return context
 
 
 class AddRemindView(FormView):
     form_class = AddRemindForm
     template_name = 'add_remind.html'
     success_url = '/'
-    extra_content = {'title': 'Add new remind'}
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.save()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Add new remind'
+        return context
+
 
 class EditRemindView(UpdateView):
     template_name = 'edit_remind.html'
     form_class = AddRemindForm
     model = ReminderItem
-    extra_content = {'title': 'Edit remind'}
+    extra_content = {'page_title': 'Edit remind'}
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.save()
         return redirect('/')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Edit remind'
+        return context
 
 
 class DeleteRemindView(DeleteView):
@@ -49,11 +69,16 @@ class DeleteRemindView(DeleteView):
     template_name = 'delete_remind.html'
     success_url = '/'
     context_object_name = 'remind'
-    extra_content = {'title': 'Delete remind'}
+    extra_content = {'page_title': 'Delete remind'}
 
     def form_valid(self, form):
-        messages.success(self.request, "The task was deleted successfully.")
+        messages.success(self.request, "The remind was deleted successfully.")
         return super(DeleteRemindView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Delete remind'
+        return context
 
 
 class SignUpView(CreateView):
@@ -61,18 +86,23 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
     form_class = NewUserForm
     success_url = '/'
-    extra_content = {'title': 'Sign Up'}
+    extra_content = {'page_title': 'Sign Up'}
 
     def form_valid(self, form):
         form_valid = super().form_valid(form)
         login(self.request, self.object)
         return form_valid
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Registration'
+        return context
+
 
 class LoginView(LoginView):
     template_name = 'login.html'
     redirect_authenticated_user = True
-    extra_content = {'title': 'Login'}
+    extra_content = {'page_title': 'Login'}
 
     def get_success_url(self):
         return reverse_lazy('memo')
@@ -80,6 +110,11 @@ class LoginView(LoginView):
     def form_invalid(self, form):
         messages.error(self.request, 'Invalid username or password')
         return self.render_to_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Login'
+        return context
 
 
 # def addReminderView(request):

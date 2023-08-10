@@ -1,0 +1,14 @@
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url "memo" %}">Memo App</a>
+        
+        <span class="navbar-text px-2">
+            {% if request.user.is_authenticated %}
+                Welcome {{ user.username }} | <a href="{% url "logout" %}">Logout</a>
+            {% else %}
+                <a href="{% url "login" %}">Log in</a>
+            {% endif %}
+        </span>
+
+    </div>
+</nav>
