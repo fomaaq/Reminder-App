@@ -39,6 +39,7 @@ class AddRemindView(FormView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.save()
+        messages.success(self.request, "The remind was added successfully.")
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -56,6 +57,7 @@ class EditRemindView(UpdateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.save()
+        messages.success(self.request, "The remind was edited successfully.")
         return redirect('/')
 
     def get_context_data(self, **kwargs):
@@ -72,7 +74,7 @@ class DeleteRemindView(DeleteView):
     extra_content = {'page_title': 'Delete remind'}
 
     def form_valid(self, form):
-        messages.success(self.request, "The remind was deleted successfully.")
+        messages.success(self.request, 'The remind was deleted successfully.')
         return super(DeleteRemindView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -91,6 +93,7 @@ class SignUpView(CreateView):
     def form_valid(self, form):
         form_valid = super().form_valid(form)
         login(self.request, self.object)
+        messages.success(self.request, 'You have successfully registered.')
         return form_valid
 
     def get_context_data(self, **kwargs):

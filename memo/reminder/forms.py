@@ -41,15 +41,7 @@ class AddRemindForm(forms.ModelForm):
 
 
 class NewUserForm(UserCreationForm):
-    username = forms.CharField(label='User name',
-                               max_length=150,
-                               help_text='User name must consist of a maximum of 150 characters'
-                               )
-    email = forms.EmailField(label='e-mail', required=True)
-    password1 = forms.CharField(label='Password',
-                                widget=forms.PasswordInput())
-    password2 = forms.CharField(label='Confirm password',
-                                widget=forms.PasswordInput())
+    email = forms.EmailField(required=True)
 
     class Meta:
         model = User
