@@ -26,11 +26,4 @@ urlpatterns = [
     path('login/register/', SignUpView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='memo'), name='logout'),
-    # # path('reminder/', reminderView),
-    # path('reminder/add_remind/', addReminderView, name='add_remind'),
-    # path('deleteReminderItem/<int:rem_item>/', deleteReminderView),
-    # path('reminder/edit_remind/<int:rem_item>/', editReminderView, name='edit_remind'),
-    # path('setRemindDate/<int:rem_item>/', setRemindView),
-    # path('sendRemindEmail/<int:rem_item>/', sendRemindView),
-    # path('enableRemind/<int:rem_item>/', enableRemindView),
 ]

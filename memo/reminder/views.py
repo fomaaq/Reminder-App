@@ -2,23 +2,22 @@ from django.shortcuts import redirect
 from django.views.generic import ListView, FormView, UpdateView, DeleteView, CreateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .models import ReminderItem
 from .forms import AddRemindForm, NewUserForm
 from django.urls import reverse_lazy
-# from django.http import HttpResponseRedirect
-# from django.core.mail import send_mail
 
 
-# def reminderView(request):
-#     reminder_items = ReminderItem.objects.all()
-#     return render(request, 'reminder.html', {'all_items': reminder_items})
-
-class ReminderView(ListView):
+# class for representing the main page of the application
+class ReminderView(LoginRequiredMixin, ListView):
     model = ReminderItem
     template_name = 'reminder.html'
     context_object_name = 'reminders'
+    paginate_by = 3
+    login_url = 'login/'
 
+    # receive reminders only for an authorized user
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return ReminderItem.objects.filter(user=self.request.user)
@@ -31,6 +30,7 @@ class ReminderView(ListView):
         return context
 
 
+# class for creating a new reminder
 class AddRemindView(FormView):
     form_class = AddRemindForm
     template_name = 'add_remind.html'
@@ -42,17 +42,21 @@ class AddRemindView(FormView):
         messages.success(self.request, "The remind was added successfully.")
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        messages.error(self.request, "There are errors in the form.")
+        return self.render_to_response(self.get_context_data(form=form))
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'Add new remind'
         return context
 
 
+# class for editing an existing remind
 class EditRemindView(UpdateView):
     template_name = 'edit_remind.html'
     form_class = AddRemindForm
     model = ReminderItem
-    extra_content = {'page_title': 'Edit remind'}
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -60,12 +64,17 @@ class EditRemindView(UpdateView):
         messages.success(self.request, "The remind was edited successfully.")
         return redirect('/')
 
+    def form_invalid(self, form):
+        messages.error(self.request, "There are errors in the form.")
+        return self.render_to_response(self.get_context_data(form=form))
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'Edit remind'
         return context
 
 
+# class for deleting remind
 class DeleteRemindView(DeleteView):
     model = ReminderItem
     template_name = 'delete_remind.html'
@@ -83,6 +92,7 @@ class DeleteRemindView(DeleteView):
         return context
 
 
+# class for registering a new user
 class SignUpView(CreateView):
     template_name = 'register.html'
     success_url = reverse_lazy('login')
@@ -96,12 +106,17 @@ class SignUpView(CreateView):
         messages.success(self.request, 'You have successfully registered.')
         return form_valid
 
+    def form_invalid(self, form):
+        messages.error(self.request, "There are errors in the form.")
+        return self.render_to_response(self.get_context_data(form=form))
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'Registration'
         return context
 
 
+# class for user authorization
 class LoginView(LoginView):
     template_name = 'login.html'
     redirect_authenticated_user = True
@@ -118,68 +133,3 @@ class LoginView(LoginView):
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'Login'
         return context
-
-
-# def addReminderView(request):
-#     form = AddRemindForm()
-#     if request.method == "POST":
-#         form = AddRemindForm(request.POST)
-#         if form.is_valid():
-#             rem_item = form.save(commit=False)
-#             rem_item.save()
-#             return redirect('/reminder')
-#     else:
-#         form = AddRemindForm()
-#     return render(request, 'add_remind.html', {'form': form})
-
-
-# def editRemindView(request, rem_item):
-#     selected_item = get_object_or_404(ReminderItem, id=rem_item)
-#     form = EditRemindForm()
-#     if request.method == "POST":
-#         form = EditRemindForm(request.POST, instance=selected_item)
-#         if form.is_valid():
-#             rem_item = form.save(commit=False)
-#             rem_item.save()
-#             return redirect('/reminder')
-#     else:
-#         form = EditRemindForm()
-#     return render(request, 'edit_remind.html', {'form': form})
-
-
-# def addReminderView(request):
-#     new_content = request.POST['content']
-#     new_item = ReminderItem(content=new_content)
-#     new_item.save()
-#     return HttpResponseRedirect('/reminder/')
-
-
-# def deleteReminderView(request, rem_item):
-#     selected_item = ReminderItem.objects.get(id=rem_item)
-#     selected_item.delete()
-#     return HttpResponseRedirect('/reminder/')
-
-
-# def enableRemindView(request, rem_item):
-#     selected_item = ReminderItem.objects.get(id=rem_item)
-#     selected_item.reminder_on = request.POST['reminder_on']
-#     selected_item.save()
-#     return HttpResponseRedirect('/reminder/')
-
-
-# def setRemindView(request, rem_item):
-#     selected_item = ReminderItem.objects.get(id=rem_item)
-#     selected_item.remind_date = request.POST['remind_date']
-#     selected_item.save()
-#     return HttpResponseRedirect('/reminder/')
-
-
-# тестовая функция для проверки отправки сообщения
-# def sendRemindView(request, rem_item):
-#     remind_item = ReminderItem.objects.get(id=rem_item)
-#     send_mail(subject='Remind from Memo App',
-#               message=remind_item.content,
-#               # TODO нужно придумать как устанавливать email пользователя
-#               recipient_list=['veek47@ya.ru', ]
-#               )
-#     return HttpResponseRedirect('/reminder/')

@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 
+# main application model
 class ReminderItem(models.Model):
     title = models.CharField(max_length=50, verbose_name='title')
     content = models.TextField(max_length=1000, verbose_name='Content', blank=True)
@@ -16,9 +17,3 @@ class ReminderItem(models.Model):
 
     def get_absolute_url(self):
         return reverse("delete_remind", kwargs={"pk": self.pk})
-
-    """
-    + напоминать/не напоминать
-    + время + дата напоминания
-    + повтор напоминания*
-    """

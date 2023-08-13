@@ -2,30 +2,57 @@
 
     {% block content %}
         <div class="container">
-            {% if request.user.is_authenticated %}
-                <button type="button" class="btn btn-primary mt-3">
-                    <a class="nav-link active" aria-current="page" href="{% url "add_remind" %}">Add new remind {{ rems_count }}</a>
-                </button>
-                    <div class="mt-3">
-                        {% for rem_item in reminders %}
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    <h6><a href="{% url "edit_remind" pk=rem_item.pk %}">{{rem_item.title}}</a></h6>
-                                    {% if rem_item.content %}
-                                        <p class="card-text">Content: {{rem_item.content}}</p>
-                                    {% endif %}
-                                    {% if rem_item.reminder_on %}
-                                        <p class="card-text">Remind Time: {{rem_item.remind_date}}, {{rem_item.remind_time|time:"H:i"}}</p>
-                                    {% endif %}
-                                    <a href="{% url "edit_remind" pk=rem_item.pk %}" class="btn btn-primary">Edit remind</a>
-                                </div>
+            <button type="button" class="btn btn-primary mt-3">
+                <a class="nav-link active" aria-current="page" href="{% url "add_remind" %}">Add new remind {{ rems_count }}</a>
+            </button>
+                <div class="mt-3">
+                    {% for rem_item in reminders %}
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6><a href="{% url "edit_remind" pk=rem_item.pk %}">{{rem_item.title}}</a></h6>
+                                {% if rem_item.content %}
+                                    <p class="card-text">Content: {{rem_item.content}}</p>
+                                {% endif %}
+                                {% if rem_item.reminder_on %}
+                                    <p class="card-text">Remind Time: {{rem_item.remind_date}}, {{rem_item.remind_time|time:"H:i"}}</p>
+                                {% endif %}
+                                <a href="{% url "edit_remind" pk=rem_item.pk %}" class="btn btn-primary">Edit remind</a>
                             </div>
-                        {% empty %}
+                        </div>
+                    {% empty %}
                         <h5>Here will be your reminders</h5>
-                        {% endfor %}
-                    </div>
-            {% else %}
-            <h4 class="mt-3">You should <a href="{% url "login" %}">login</a> first</h4>
+                    {% endfor %}
+                </div>
+            {% if page_obj.has_other_pages %}          
+                <nav aria-label="...">
+                <ul class="pagination">
+                
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1">Previous</a>
+                    </li>
+                {% endif %}
+                    
+                {% for p in page_obj.paginator.page_range %}
+    
+                    {% if page_obj.number == p %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                        </li>
+                    {% elif p > page_obj.number|add:-3 and p < page_obj.number|add:+3 %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                        </li>
+                    {% endif %}
+
+                {% endfor %}
+            
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                {% endif %}
+                
             {% endif %}
         </div>
     {% endblock content %}
