@@ -9,20 +9,18 @@ from .forms import AddRemindForm, NewUserForm
 from django.urls import reverse_lazy
 
 
-# class for representing the main page of the application
 class ReminderView(LoginRequiredMixin, ListView):
+    '''
+    Class for representing the main page of the application
+    '''
     model = ReminderItem
     template_name = 'reminder.html'
     context_object_name = 'reminders'
     paginate_by = 3
     login_url = 'login/'
 
-    # receive reminders only for an authorized user
     def get_queryset(self):
-        if self.request.user.is_authenticated:
-            return ReminderItem.objects.filter(user=self.request.user)
-        else:
-            pass
+        return ReminderItem.objects.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -30,8 +28,10 @@ class ReminderView(LoginRequiredMixin, ListView):
         return context
 
 
-# class for creating a new reminder
 class AddRemindView(FormView):
+    '''
+    Class for creating a new reminder
+    '''
     form_class = AddRemindForm
     template_name = 'add_remind.html'
     success_url = '/'
@@ -52,8 +52,10 @@ class AddRemindView(FormView):
         return context
 
 
-# class for editing an existing remind
 class EditRemindView(UpdateView):
+    '''
+    Class for editing an existing remind
+    '''
     template_name = 'edit_remind.html'
     form_class = AddRemindForm
     model = ReminderItem
@@ -74,8 +76,10 @@ class EditRemindView(UpdateView):
         return context
 
 
-# class for deleting remind
 class DeleteRemindView(DeleteView):
+    '''
+    Class for deleting remind
+    '''
     model = ReminderItem
     template_name = 'delete_remind.html'
     success_url = '/'
@@ -92,8 +96,10 @@ class DeleteRemindView(DeleteView):
         return context
 
 
-# class for registering a new user
 class SignUpView(CreateView):
+    '''
+    Class for registering a new user
+    '''
     template_name = 'register.html'
     success_url = reverse_lazy('login')
     form_class = NewUserForm
@@ -116,8 +122,10 @@ class SignUpView(CreateView):
         return context
 
 
-# class for user authorization
 class LoginView(LoginView):
+    '''
+    Class for user authorization
+    '''
     template_name = 'login.html'
     redirect_authenticated_user = True
     extra_content = {'page_title': 'Login'}

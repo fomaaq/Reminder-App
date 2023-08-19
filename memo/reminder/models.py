@@ -3,8 +3,10 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 
-# main application model
 class ReminderItem(models.Model):
+    '''
+    Main application model
+    '''
     title = models.CharField(max_length=50, verbose_name='title')
     content = models.TextField(max_length=1000, verbose_name='Content', blank=True)
     reminder_on = models.BooleanField(verbose_name='Remind enable')
