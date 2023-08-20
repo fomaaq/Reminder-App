@@ -30,6 +30,7 @@ The function of checking the list of reminders that will need to be sent is cove
 
 Function covered by tests:
 
+```python
     def get_reminders_to_send(reminders, now):
         '''
         Method for checking which reminders should be sent
@@ -47,20 +48,24 @@ Function covered by tests:
                 reminders_to_send.append(remind)
 
         return reminders_to_send
+```
 
 Test classes to test the function:
 
 1) Test class simulating the basic web application model "ReminderItem":
 
+```python
         class MockReminder():
-        def __init__(self, hour, minute):
-            self.remind_time = MockRemindTime(hour=hour, minute=minute)
+            def __init__(self, hour, minute):
+                self.remind_time = MockRemindTime(hour=hour, minute=minute)
 
-        def __eq__(self, obj):
-            return self.remind_time == obj.remind_time
+            def __eq__(self, obj):
+                return self.remind_time == obj.remind_time
+```
 
 2) Test class simulating the time for the 1st test class:
 
+```python
         class MockRemindTime():
             def __init__(self, hour, minute):
                 self.hour = hour
@@ -68,17 +73,20 @@ Test classes to test the function:
 
             def __eq__(self, obj):
                 return self.hour == obj.hour and self.minute == obj.minute
-
+```
 
 3) Test class simulating the current time::
 
+```python
         class MockNow():
             def __init__(self, hour, minute):
                 self.hour = hour
                 self.minute = minute
+```
 
 An example of one of the tests when one of the reminders should be sent (standart situation):
 
+```python
     def test_default__get_reminders_to_send():
         reminders = [
             MockReminder(hour=10, minute=20),
@@ -98,9 +106,11 @@ An example of one of the tests when one of the reminders should be sent (standar
         actual = get_reminders_to_send(reminders=reminders, now=now)
 
         assert expected == actual
+```
 
 An example of one of the tests when it is impossible to get the current time:
 
+```python
     def test_not_now__get_reminders_to_send():
         reminders = [
             MockReminder(hour=10, minute=20),
@@ -118,7 +128,7 @@ An example of one of the tests when it is impossible to get the current time:
         actual = get_reminders_to_send(reminders=reminders, now=now)
 
         assert expected == actual
-
+```
 
 ## How to use
 
