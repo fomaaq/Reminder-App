@@ -1,6 +1,8 @@
 # Memo App
 Reminder application based on Python Django Framework and Schedule library
 
+The application sends reminders to the user's email at a specified time.
+
 ## Content
 
 - [Preview](#preview)
