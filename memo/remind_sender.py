@@ -1,4 +1,6 @@
-# Custom module that contains methods for sending notifications at a set time
+'''
+Custom module that contains methods for check and sending reminder at a set time
+'''
 
 # Importing django settings for the custom module to work
 import django
@@ -10,9 +12,7 @@ django.setup()
 
 
 # Use a third-party library "schedule"
-import schedule
 import datetime
-import time
 from reminder.models import ReminderItem
 from django.core.mail import send_mail
 from memo.security_settings import MY_EMAIL_HOST_USER
@@ -26,6 +26,7 @@ def send_remind(remind):
     remind_item = ReminderItem.objects.get(id=remind.id)
     remind_date = remind_item.remind_date.strftime("%d/%m/%Y")
     remind_time = remind_item.remind_time.strftime("%H:%M")
+
     send_mail(subject='Remind from Memo App',
               message=(f'Remind: {remind_item.title}\n'
                        f'At: {remind_date}, {remind_time}\n'
@@ -49,7 +50,11 @@ def get_reminders_to_send(reminders, now):
     '''
     Method for checking which reminders should be sent
     '''
+    if reminders is None or now is None:
+        return []
+
     reminders_to_send = []
+
     for remind in reminders:
         remind_time = remind.remind_time
         is_remind_to_send = remind_time.hour == now.hour and remind_time.minute == now.minute
@@ -67,12 +72,3 @@ def do_remind():
     reminders_to_send = get_reminds()
     for remind in reminders_to_send:
         send_remind(remind)
-
-
-# Initiates the "check_remind" method every 1 minute
-schedule.every(1).minutes.do(do_remind)
-
-# Provides endless operation of the "schedule" library
-while True:
-    schedule.run_pending()
-    time.sleep(1)
