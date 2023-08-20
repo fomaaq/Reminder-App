@@ -175,3 +175,9 @@ Also in the app you can:
 Python version 3.11, Django version 4.2 and Schedule version 1.2 was used at launch
 
 Detailed information about the requirements is provided in the [requirements.txt](https://github.com/fomaaq/reminder_app/blob/main/requirements.txt)
+
+To launch the application, you need:
+
+1) Start Django Server
+
+2) Launch the module "reminder_sender_run.py "
