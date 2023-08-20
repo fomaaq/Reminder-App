@@ -1,11 +1,17 @@
 # Memo App
 Reminder application based on Python Django Framework and Schedule library
 
+## Content
+
+- [Built with](#built-with)
+- [App creation motivation](#app-creation-motivation)
+- [Features](#features)
+- [How to use](#how-to-use)
+- [How to run](#how-to-run)
 
 ## Preview
 
 ![Main_page_multiply.png](https://github.com/fomaaq/reminder_app/blob/main/pics/Main_page_multiply.png?raw=true)
-
 
 
 ## Built with
@@ -179,5 +185,11 @@ Detailed information about the requirements is provided in the [requirements.txt
 To launch the application, you need:
 
 1) Start Django Server
+```
+python manage.py runserver
+```
 
-2) Launch the module "reminder_sender_run.py "
+2) Launch the module "reminder_sender_run.py"
+```
+python reminder_sender_run.py
+```
