@@ -3,6 +3,7 @@ Reminder application based on Python Django Framework and Schedule library
 
 ## Content
 
+- [Preview](#preview)
 - [Built with](#built-with)
 - [App creation motivation](#app-creation-motivation)
 - [Features](#features)
